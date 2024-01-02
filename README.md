@@ -32,8 +32,7 @@ pip install gor4
 pip install mhcflurry
 mhcflurry-downloads fetch
 
-## install NetMHCpan4.1
-## download NetMHCpan4.1
+## download NetMHCpan4.1（details in the website）
 https://services.healthtech.dtu.dk/services/NetMHCpan-4.1/
 
 ## download Pfam-A.hmm(new release is 36.0)
