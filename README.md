@@ -69,11 +69,11 @@ usage: python main.py [OPTIONS]
 	-e <cutoff> 
                 the cutoff for domain prediction: recommand (1e-5)
 	-e1 <cutoff1> 
-                the cutoff of netMHCpanEL,defaule=2
+                the cutoff of netMHCpanEL EL rank
 	-e2 <cutoff2>   
-                the cutoff of netMHCpanBA,default=2
+                the cutoff of netMHCpanBA BA rank
 	-e3 <cutoff3>
-                the cutoff of MHCflurry,default=2
+                the cutoff of MHCflurry affinity_percentile
 	-c <cpu>  
                 the kernel numbers of cpu
 	-d <path>  
