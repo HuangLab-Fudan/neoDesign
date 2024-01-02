@@ -84,9 +84,14 @@ usage: python main.py [OPTIONS]
 
 ### example ##
 	usage: 
+ 	* The results folder must be created in the current directory before running for the first time.
+	mkdir result
 	python3 main.py -p MC38.txt -l 1 -s mouse -e 1e-5 -c 2 -d /home/neoDesign/Pfam-A.hmm -d2 /home/neoDesign/netMHCpan-4.1/netMHCpan
-	attention:
-	After each program execution, delete the generated intermediate files in the current program directory and subdirectory result, such as sequence....txt
+	* attention:
+	* After each program execution, delete the generated intermediate files in the current program directory and subdirectory result, such as sequence....txt，seq....txt
+ 	rm ./result/*
+  	rm seq*.txt
+   	rm sequence*.txt
 
 Output:  
 		 result.txt(optimized sequence)
