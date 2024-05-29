@@ -17,7 +17,7 @@ neoDesign was developed with python (recommend>3.9) and shell (bash) language. B
 * NetMHCpan4.1
 * NetChop3.1
 * hmmer(>3.4)
-
+* ProtTrans
 NeoDesign Installation
 ------------
 Follow the installation steps
@@ -56,6 +56,8 @@ make install
 #### be sure to add hmmer to the environment variable
 export PATH=/yout/install/path/bin:$PATH 
 
+### downloads prot_t5_xl_uniref50
+download protTrans model from the website https://huggingface.co/Rostlab/prot_t5_xl_uniref50/tree/main and save in the folder named prot_t5_xl_uniref50
 
 Files Needed:
 ------------
