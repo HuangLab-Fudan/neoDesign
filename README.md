@@ -21,37 +21,39 @@ neoDesign was developed with python (recommend>3.9) and shell (bash) language. B
 NeoDesign Installation
 ------------
 Follow the installation steps
-**environment construction**
-**conda create**
+### environment construction
+### conda create
 conda create -n neoDesign
 conda activate neoDesign
 
-**install GOR4**
+### install GOR4
 pip install gor4
 
-**install mhcflurry(details in https://github.com/openvax/mhcflurry)**
+### install mhcflurry(details in https://github.com/openvax/mhcflurry)
 pip install mhcflurry
 mhcflurry-downloads fetch
 
-**install NetMHCpan4.1**
-**download NetMHCpan4.1**
+### install NetMHCpan4.1
+### download NetMHCpan4.1
 https://services.healthtech.dtu.dk/services/NetMHCpan-4.1/
 
-**install NetChop3.1**
-**download NetChop3.1**
+### install NetChop3.1
+### download NetChop3.1
 https://services.healthtech.dtu.dk/services/NetChop-3.1/
 
-**download Pfam-A.hmm(new release is 36.0)**
+### download Pfam-A.hmm(new release is 36.0)
 wget https://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam36.0/Pfam-A.hmm.gz
 gzip -d Pfam-A.hmm.gz
 
-**install hmmer (new version is 3.4)**
+### install hmmer (new version is 3.4)
+
 wget http://eddylab.org/software/hmmer/hmmer-3.4.tar.gz
 tar xzf hmmer-3.4.tar.gz
 ./configure --prefix=/yout/install/path
 make
 make install
-**be sure to add hmmer to the environment variable**
+
+#### be sure to add hmmer to the environment variable
 export PATH=/yout/install/path/bin:$PATH 
 
 
@@ -104,7 +106,7 @@ usage: python main.py [OPTIONS]
 	attention:
 	After each program execution, delete the generated intermediate files in the current program directory and subdirectory result, such as sequence....txt
 
-Output:  
+### Output:  
 		 result.txt(optimized sequence,the name of the file determined by your input peptides file)
 		 ./result(A directory that stores neoantigen predictions)
 --------------------------------------------------------------------------------------------------
@@ -117,7 +119,7 @@ Use neoDesign to generate the recommended λ
 	2. Execute the following code:
 	python lambda_evaluation.py
 
-Output:  
+### Output:  
 		 output_lambda.txt(The λ-value corresponds one-to-one with the input protein sequence)
 ----------------------------------------------------------------------------------------
 
