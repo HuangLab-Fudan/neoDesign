@@ -117,7 +117,7 @@ usage: python main.py [OPTIONS]
 Use neoDesign to generate the recommended λ
 ### example ##
 	usage: 
-	1.Save your optimal protein sequences in a txt file. Each line is a protein sequence and the file is named :target_protein_sequence.txt
+	1.Save your optimal protein sequences in a txt file. Each line is a protein sequence and the file is named :target_protein_sequence.txt（*Add up to 128 protein sequences, more than 128 will result in a runtime error.）
 	2. Execute the following code:
 	python lambda_evaluation.py
 
