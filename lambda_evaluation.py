@@ -134,12 +134,14 @@ else:
 
 
 #min model load
-model.load_state_dict(torch.load('./model_min.pth'))  
+device = torch.device("cpu")
+model.load_state_dict(torch.load('./model_min.pth', map_location=device))  
 
 emb_num = len(emb_per_protein)
 
 
 merged_list = emb_per_protein*128
+merged_list = merged_list[0:128]
 if torch.cuda.is_available():
     inputs = torch.from_numpy(np.array(merged_list)).cuda().float()
 else:
@@ -149,11 +151,11 @@ model.eval()
 with torch.no_grad():  
     output = model.feed(inputs)  
 tensor_list_min = output.tolist()
-tensor_list_min = tensor_list[0:emb_num]
+tensor_list_min = tensor_list_min[0:emb_num]
 
 
 #max model load
-model.load_state_dict(torch.load('./model_max.pth'))  
+model.load_state_dict(torch.load('./model_max.pth',map_location=device))  
 
 if torch.cuda.is_available():
     inputs = torch.from_numpy(np.array(merged_list)).cuda().float()
@@ -164,11 +166,13 @@ model.eval()
 with torch.no_grad(): 
     output = model.feed(inputs)  
 tensor_list_max = output.tolist()
-tensor_list_max = tensor_list[0:emb_num]
+tensor_list_max = tensor_list_max[0:emb_num]
 
 mid = []
+print(tensor_list_min)
+print(tensor_list_max)
 for i in range(0,emb_num):
-    mid.append((tensor_list_min[i] + tensor_list_max[i])/2)
+    mid.append((tensor_list_min[i][0] + tensor_list_max[i][0])/2)
 
 max_val = max(mid)
 min_val = min(mid)
@@ -187,9 +191,9 @@ with open("./output_lambda.txt","w") as f:
     f.write("recommended lambda")
     f.write("\n")
     for i in range(0,emb_num):
-        f.write(str(tensor_list_min[i]))
+        f.write(str(tensor_list_min[i][0]))
         f.write("\t")
-        f.write(str(tensor_list_max[i]))
+        f.write(str(tensor_list_max[i][0]))
         f.write("\t")
         f.write(str(recommended_lambda[i]))
         f.write("\n")
