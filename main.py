@@ -15,6 +15,7 @@ parser.add_argument("-e1","--cutoff1",help="the cutoff of netMHCpanEL,defaule=2"
 parser.add_argument("-e2","--cutoff2",help="the cutoff of netMHCpanBA,default=2")
 parser.add_argument("-e3","--cutoff3",help="the cutoff of MHCflurry,default=2")
 parser.add_argument("-e4","--cutoff4",help="the cutoff of netchop,default=0.5")
+parser.add_argument("-e5","--cutoff5",help="the cutoff of pepsickle,default=0.5")
 parser.add_argument("-e","--cutoff",help="the cutoff of hmmerscan,recommended:1e-5")
 parser.add_argument("-c","--cpu",help="cpu numbers")
 parser.add_argument("-d","--directory",help="Pfam directory")

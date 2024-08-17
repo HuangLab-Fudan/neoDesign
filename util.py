@@ -4,7 +4,8 @@ import subprocess
 import argparse
 import multiprocessing
 from gor4 import GOR4
-
+#自定义列表
+default_linker_library = ["GGGGSGGGGS","SGGGGSGGGG","GSGSGSGSGS","GGSGGSGGSGGS","GGGGSGGGGSAAA","GGGGSGAAAGGSGGGG","GSGSSGSGSS"]
 parser = argparse.ArgumentParser()
 parser.add_argument("-p","--pep",help="neoantigen peptides file")
 parser.add_argument("-l","--parameter",help="the parameter balancing the library numbers and structure")
@@ -14,11 +15,19 @@ parser.add_argument("-e1","--cutoff1",help="the cutoff of netMHCpanEL,defaule=2"
 parser.add_argument("-e2","--cutoff2",help="the cutoff of netMHCpanBA,default=2")
 parser.add_argument("-e3","--cutoff3",help="the cutoff of MHCflurry,default=2")
 parser.add_argument("-e4","--cutoff4",help="the cutoff of netchop,default=0.5")
+parser.add_argument("-e5","--cutoff5",help="the cutoff of pepsickle,default=0.5")
 parser.add_argument("-e","--cutoff",help="the cutoff of hmmerscan,recommended:1e-5")
 parser.add_argument("-c","--cpu",help="cpu numbers")
 parser.add_argument("-d","--directory",help="Pfam directory")
 parser.add_argument("-d2","--directory2",help="NetMHCpan4.0 directory")
 parser.add_argument("-d3","--directory3",help="Netchop3.1 directory")
+parser.add_argument(
+        '--linker_library',
+        type=str,
+        nargs='*',  # 允许多个值
+        default=default_linker_library,
+        help='List of linker sequences (default: use built-in ones).'
+    )
 args = parser.parse_args()
 
 #basic functions
@@ -33,11 +42,12 @@ def split_string(string, positions):
     result.append(string[start:])
     return result
 #SB_antigen:find neoantigens
-def SB_antigen(seq,num,e1=2,e2=2,e3=2,e4=0.5,v=0):
+def SB_antigen(seq,num,e1=2,e2=2,e3=2,e4=0.5,e5=0.5,v=0):
     filename="./result/new_antigen"+str(num)+".fas"
     output="./result/antigen_out"+str(num)+".txt"
     output2="./result/predictions"+str(num)+".csv"
     output3="./result/chop"+str(num)+".out"
+    output4="./result/pepsickle"+str(num)+".out"
     with open(filename,"w") as f:
         f.write(">seq")
         f.write("\n")
@@ -77,7 +87,21 @@ def SB_antigen(seq,num,e1=2,e2=2,e3=2,e4=0.5,v=0):
                 positions.append(int(x[0]))
     for i in split_string(seq, positions):
         if len(i)>7 and len(i)<12:
-            antigen.append(i)     
+            antigen.append(i)
+    cmd4 =  "pepsickle -f " + filename + " -t " + str(e5) + " -o " + output4
+    res = subprocess.Popen(cmd4,shell=True)
+    res.wait()
+    positions=[]
+    with open(output4,"r") as f:
+        next(f)
+        for line in f:
+            modified_line = re.sub(r'\s+', ' ', line.strip())
+            x=modified_line.split(" ")
+            if len(x) > 4 and x[3] == "True":
+                positions.append(int(x[0]))
+    for i in split_string(seq, positions):
+        if len(i) > 7 and len(i) < 12:
+            antigen.append(i)                   
     return antigen
 #find unexpected neoantigens
 def find_element(A,B):
@@ -174,6 +198,7 @@ with open(args.pep,"r") as f:
         if i>30:
             break   
 
+
 d=args.directory
 l=int(args.parameter)
 s=args.species
@@ -183,5 +208,7 @@ e1=args.cutoff1
 e2=args.cutoff2
 e3=args.cutoff3
 e4=args.cutoff4
+e5=args.cutoff5
 v=int(args.version)
 p=args.pep
+linker_library = args.linker_library if args.linker_library else default_linker_library

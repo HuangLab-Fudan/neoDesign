@@ -12,7 +12,7 @@ def library_construction_front(pep,num):
 	for i in util.modules:
 		if pep!=i:
 			seq=i+pep
-			antigen_list=util.SB_antigen(seq,num,util.e1,util.e2,util.e3)
+			antigen_list=util.SB_antigen(seq,num,util.e1,util.e2,util.e3,util.e4,util.e5)
 			no_need=util.find_element(antigen_list,util.modules)
 			if len(no_need)==0:
 				save.append(i)
@@ -24,7 +24,7 @@ def library_construction_end(pep,num):
 	for i in util.modules:
 		if pep!=i:
 			seq=pep+i
-			antigen_list=util.SB_antigen(seq,num,util.e1,util.e2,util.e3)
+			antigen_list=util.SB_antigen(seq,num,util.e1,util.e2,util.e3,util.e4,util.e5)
 			no_need=util.find_element(antigen_list,util.modules)
 			if len(no_need)==0:
 				save.append(i)
