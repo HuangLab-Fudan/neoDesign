@@ -16,48 +16,51 @@ neoDesign was developed with python (recommend>3.9) and shell (bash) language. B
 * mhcflurry
 * NetMHCpan4.1
 * NetChop3.1
+* pepsickle
 * hmmer(>3.4)
-* ProtTrans
+
 NeoDesign Installation
 ------------
 Follow the installation steps
-### environment construction
-### conda create
+-------------
+# environment construction
+# conda create
 conda create -n neoDesign
 conda activate neoDesign
 
-### install GOR4
+# install GOR4
 pip install gor4
 
-### install mhcflurry(details in https://github.com/openvax/mhcflurry)
+# install mhcflurry(details in https://github.com/openvax/mhcflurry)
 pip install mhcflurry
 mhcflurry-downloads fetch
 
-### install NetMHCpan4.1
-### download NetMHCpan4.1
+# install NetMHCpan4.1
+# download NetMHCpan4.1
 https://services.healthtech.dtu.dk/services/NetMHCpan-4.1/
 
-### install NetChop3.1
-### download NetChop3.1
+# install NetChop3.1
+# download NetChop3.1
 https://services.healthtech.dtu.dk/services/NetChop-3.1/
 
-### download Pfam-A.hmm(new release is 36.0)
+
+# install pepsickle
+pip install pepsickle
+
+
+# download Pfam-A.hmm(new release is 36.0)
 wget https://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam36.0/Pfam-A.hmm.gz
 gzip -d Pfam-A.hmm.gz
 
-### install hmmer (new version is 3.4)
-
+# install hmmer (new version is 3.4)
 wget http://eddylab.org/software/hmmer/hmmer-3.4.tar.gz
 tar xzf hmmer-3.4.tar.gz
 ./configure --prefix=/yout/install/path
 make
 make install
-
-#### be sure to add hmmer to the environment variable
+# be sure to add hmmer to the environment variable
 export PATH=/yout/install/path/bin:$PATH 
 
-### downloads prot_t5_xl_uniref50
-download protTrans model from the website https://huggingface.co/Rostlab/prot_t5_xl_uniref50/tree/main and save in the folder named prot_t5_xl_uniref50
 
 Files Needed:
 ------------
@@ -89,6 +92,8 @@ usage: python main.py [OPTIONS]
                 the cutoff of MHCflurry,default=2
 	-e4 <cutoff4>
 				the cutoff of netchop,default=0.5
+	-e5 <cutoff5>
+				the cutoff of pepsickle,default=0.5
 	-c <cpu>  
                 the kernel numbers of cpu
 	-d <path>  
@@ -104,24 +109,23 @@ usage: python main.py [OPTIONS]
 	usage: 
 	* generate a subdirectory first
 	mkdir result
-	python3 main.py -p example/TCGA-US-A77E-01A.txt -l 1 -s human -v 0 -e 1e-5 -e1 0.05 -e2 0.05 -e3 0.05 -e4 0.5 -c 2 -d /home/neoDesign/Pfam-A.hmm -d2 /home/neoDesign/netMHCpan-4.1/netMHCpan -d3 /home/neoDesign/netchop-3.1/netchop
+	python3 main.py -p example/TCGA-US-A77E-01A.txt -l 1 -s human -v 0 -e 1e-5 -e1 0.05 -e2 0.05 -e3 0.05 -e4 0.5 -e5 0.5 -c 2 -d /home/neoDesign/Pfam-A.hmm -d2 /home/neoDesign/netMHCpan-4.1/netMHCpan -d3 /home/neoDesign/netchop-3.1/netchop
 	attention:
 	After each program execution, delete the generated intermediate files in the current program directory and subdirectory result, such as sequence....txt
 
-### Output:  
+Output:  
 		 result.txt(optimized sequence,the name of the file determined by your input peptides file)
 		 ./result(A directory that stores neoantigen predictions)
 --------------------------------------------------------------------------------------------------
 
 
 Use neoDesign to generate the recommended λ
-### example ##
-	usage: 
-	1.Save your optimal protein sequences in a txt file. Each line is a protein sequence and the file is named :target_protein_sequence.txt（*Add up to 128 protein sequences, more than 128 will result in a runtime error.）
+usage: 
+	1.Save your optimal protein sequences in a txt file. Each line is a protein sequence and the file is named :target_protein_sequence.txt
 	2. Execute the following code:
-	python lambda_evaluation.py
+		python lambda_evaluation.py
 
-### Output:  
+Output:  
 		 output_lambda.txt(The λ-value corresponds one-to-one with the input protein sequence)
 ----------------------------------------------------------------------------------------
 
