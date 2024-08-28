@@ -23,47 +23,29 @@ sequence_examples=[]
 with open("target_protein_sequence.txt","r") as f:
     for line in f.readlines():
         sequence_examples.append(line.strip())
-#sequence_examples = ["P*RTEINO", "*SEQWENCE"]
 
+#sequence_examples = ["P*RTEINO", "*SEQWENCE"]
 # replace all rare/ambiguous amino acids by X and introduce white-space between all amino acids
 sequence_examples = [" ".join(list(re.sub(r"[UZOB]", "X", sequence))) for sequence in sequence_examples]
 seq_len = len(sequence_examples)
 # tokenize sequences and pad up to the longest sequence in the batch
-#ids = tokenizer(sequence_examples, add_special_tokens=True, padding="longest")
 ids = tokenizer.batch_encode_plus(sequence_examples, add_special_tokens=True, padding=True, return_tensors="tf")
 #print(ids)
 input_ids = ids["input_ids"]
 attention_mask = ids['attention_mask']
-#input_ids = torch.tensor(ids['input_ids']).to(device)
-#attention_mask = torch.tensor(ids['attention_mask']).to(device)
 
-embedding = model(input_ids)
-embedding = np.asarray(embedding.last_hidden_state)
-attention_mask = np.asarray(attention_mask)
-features = []
-for seq_num in range(len(embedding)):
-    seq_len = (attention_mask[seq_num] == 1).sum()
-    seq_emd = embedding[seq_num][:seq_len-1]
-    print(seq_emd.tolist())
-    features.append(seq_emd.tolist())
-#print(len(features))
-#print(features)
-
-with open("target_feature.txt","w") as f:
-    for i in features:
-        f.write(str(i))
-        f.write("\n")
-
-
+with torch.no_grad():
+    embedding_repr = model(input_ids=input_ids, attention_mask=attention_mask)
+emb_0 = embedding_repr.last_hidden_state[0,:]
+emb = []
 emb_per_protein = []
-with open("target_feature.txt","r") as f:
-    for line in f.readlines():
-        lst = ast.literal_eval(line)[0]
-        lst_float = [float(item) for item in lst]
-        emb_per_protein.append(lst_float)
-
-with open('target_emb_per_protein.pkl', 'wb') as f:
-    pickle.dump(emb_per_protein, f)
+for i in range(0,len(sequence_examples)):
+    emb.append(embedding_repr.last_hidden_state[i,:])
+for i in emb:
+    emb_per_protein.append(np.array(i).mean(0))
+#sava embedding
+features_array = np.array(emb_per_protein)
+np.save('target_protTrans_features.npy', features_array)
 
 
 #model predict
@@ -135,7 +117,7 @@ else:
 
 #min model load
 device = torch.device("cpu")
-model.load_state_dict(torch.load('./model_min.pth', map_location=device))  
+model = torch.load('./model_min.pth', map_location=device)
 
 emb_num = len(emb_per_protein)
 
@@ -155,7 +137,7 @@ tensor_list_min = tensor_list_min[0:emb_num]
 
 
 #max model load
-model.load_state_dict(torch.load('./model_max.pth',map_location=device))  
+model = torch.load('./model_max.pth',map_location=device)
 
 if torch.cuda.is_available():
     inputs = torch.from_numpy(np.array(merged_list)).cuda().float()
@@ -171,17 +153,14 @@ tensor_list_max = tensor_list_max[0:emb_num]
 mid = []
 print(tensor_list_min)
 print(tensor_list_max)
+max_l = max(tensor_list_max)
+min_l = min(tensor_list_min)
+diff = max_l[0] - min_l[0]
 for i in range(0,emb_num):
-    mid.append((tensor_list_min[i][0] + tensor_list_max[i][0])/2)
-
-max_val = max(mid)
-min_val = min(mid)
-
-dis = max_val-min_val
-
-recommended_lambda = []
-for i in range(0,emb_num):
-    recommended_lambda.append(abs(mid[i])/dis*20)
+    if abs(tensor_list_min[i][0] + tensor_list_max[i][0])/diff*20 <20:
+        mid.append(abs(tensor_list_min[i][0] + tensor_list_max[i][0])/diff*20)
+    else:
+        mid.append(20)
 
 with open("./output_lambda.txt","w") as f:
     f.write("min")
@@ -195,5 +174,5 @@ with open("./output_lambda.txt","w") as f:
         f.write("\t")
         f.write(str(tensor_list_max[i][0]))
         f.write("\t")
-        f.write(str(recommended_lambda[i]))
+        f.write(str(mid[i]))
         f.write("\n")

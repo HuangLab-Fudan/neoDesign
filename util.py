@@ -69,7 +69,7 @@ def SB_antigen(seq,num,e1=2,e2=2,e3=2,e4=0.5,e5=0.5,v=0):
     if args.species=="mouse":
         cmd2="mhcflurry-predict-scan  --sequences "+seq+ " --alleles H-2-Kb,H-2-Db --threshold-affinity-percentile "+ e3 + " --out " +output2
     else:
-        cmd2="mhcflurry-predict-scan  --sequences "+seq+ " --alleles HLA-A*02:01,HLA-A*03:01,HLA-B*57:01,HLA-B*45:01,HLA-C*02:02,HLA-C*07:02 --threshold-affinity-percentile "+ e3 +" --out " +output2
+        cmd2="mhcflurry-predict-scan  --sequences "+seq+ " --alleles HLA-A*01:01,HLA-A*11:01,HLA-A*24:02,HLA-A*02:01,HLA-A*03:01,HLA-B*07:02,HLA-B*08:01,HLA-B*57:01,HLA-B*45:01,HLA-C*02:02,HLA-C*03:03,HLA-C*04:01,HLA-C*07:02,HLA-C*06:02 --threshold-affinity-percentile "+ e3 +" --out " +output2
     res = subprocess.Popen(cmd2,shell=True)
     res.wait()
     with open(output2,"r") as f:
