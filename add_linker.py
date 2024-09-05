@@ -15,6 +15,7 @@ sequence=optimal_path_filtering.current_sequence
 new_antigen_list = util.find_element(util.SB_antigen(optimal_path_filtering.current_sequence,0,util.e1,util.e2,util.e3,util.e4,util.e5), util.modules)
 linker_library = util.linker_library
 result_linker = {}
+final = sequence
 if len(new_antigen_list)==0:
         final=sequence
         print("result")
