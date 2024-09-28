@@ -1,7 +1,7 @@
 
 NeoDesign: A Computational Tool for Optimal Selection of Polyvalent Neoantigen Combinations
 --------------------------------------------
-NeoDesign manuscript now published in XXX. Open Access: www.XXX
+NeoDesign manuscript now published in Bioinformatics. Open Access: https://doi.org/10.1093/bioinformatics/btae585
 
 What is the NeoDesign
 ----------------
