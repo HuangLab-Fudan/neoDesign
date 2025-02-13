@@ -10,17 +10,17 @@ device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
 # Load the tokenizer
 #tokenizer = T5Tokenizer.from_pretrained('prot_t5_xl_uniref50', do_lower_case=False,legacy=False)
-tokenizer = T5Tokenizer.from_pretrained("prot_t5_xl_uniref50", do_lower_case=False,legacy=False)
+tokenizer = T5Tokenizer.from_pretrained("/home/bobyu/G/neodesign/code/prot_t5_xl_uniref50", do_lower_case=False,legacy=False)
 # Load the model
 #model = T5EncoderModel.from_pretrained("prot_t5_xl_uniref50").to(device)
-model = TFT5EncoderModel.from_pretrained("prot_t5_xl_uniref50", from_pt=True)
+model = TFT5EncoderModel.from_pretrained("/home/bobyu/G/neodesign/code/prot_t5_xl_uniref50", from_pt=True)
 # only GPUs support half-precision currently; if you want to run on CPU use full-precision (not recommended, much slower)
 #if device==torch.device("cpu"):
 #    model.to(torch.float32)
 
 # prepare your protein sequences as a list
 sequence_examples=[]
-with open("target_protein_sequence.txt","r") as f:
+with open("/home/bobyu/G/neodesign/code/target_protein_sequence.txt","r") as f:
     for line in f.readlines():
         sequence_examples.append(line.strip())
 
@@ -47,7 +47,8 @@ for i in emb:
 features_array = np.array(emb_per_protein)
 np.save('target_protTrans_features.npy', features_array)
 
-
+emb_per_protein = np.load('target_protTrans_features.npy')
+print(np.shape(emb_per_protein))
 #model predict
 
 import torch # Pytorch Library
@@ -117,13 +118,13 @@ else:
 
 #min model load
 device = torch.device("cpu")
-model = torch.load('./model_min.pth', map_location=device)
+model = torch.load('/home/bobyu/G/neodesign/code/model_min.pth', map_location=device)
 
 emb_num = len(emb_per_protein)
-
-
+emb_per_protein = emb_per_protein.tolist()
 merged_list = emb_per_protein*128
 merged_list = merged_list[0:128]
+print(len(merged_list))
 if torch.cuda.is_available():
     inputs = torch.from_numpy(np.array(merged_list)).cuda().float()
 else:
@@ -137,7 +138,7 @@ tensor_list_min = tensor_list_min[0:emb_num]
 
 
 #max model load
-model = torch.load('./model_max.pth',map_location=device)
+model = torch.load('/home/bobyu/G/neodesign/code/model_max.pth',map_location=device)
 
 if torch.cuda.is_available():
     inputs = torch.from_numpy(np.array(merged_list)).cuda().float()
@@ -157,12 +158,12 @@ max_l = max(tensor_list_max)
 min_l = min(tensor_list_min)
 diff = max_l[0] - min_l[0]
 for i in range(0,emb_num):
-    if abs(tensor_list_min[i][0] + tensor_list_max[i][0])/diff*20 <20:
-        mid.append(abs(tensor_list_min[i][0] + tensor_list_max[i][0])/diff*20)
+    if abs(tensor_list_min[i][0] + tensor_list_max[i][0])/2*0.0589 <20:
+        mid.append(abs(tensor_list_min[i][0] + tensor_list_max[i][0])/2*0.0589)
     else:
         mid.append(20)
 
-with open("./output_lambda.txt","w") as f:
+with open("/home/bobyu/G/neodesign/code/output_lambda.txt","w") as f:
     f.write("min")
     f.write("\t")
     f.write("max")
