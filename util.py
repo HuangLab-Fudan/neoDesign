@@ -75,20 +75,33 @@ def SB_antigen(seq,num,e1=2,e2=2,e3=2,e4=0.5,e5=0.5,v=0):
     with open(output2,"r") as f:
         for line in f.readlines()[1:]:
             antigen.append(line.strip().split(",")[2])
-    cmd3 = args.directory2 + " " + filename + " -t " + str(e4) + " -v " + str(v) + " -inptype 1 > " + output3
+    cmd3 = args.directory3 + " " + filename + " -t " + str(e4) + " -v " + str(v) + " > " + output3
     res = subprocess.Popen(cmd3,shell=True)
     res.wait()
     positions=[]
     with open(output3,"r") as f:
-        for line in f.readlines()[20:-5]:
-            modified_line = re.sub(r'\s+',' ',line.strip())
-            x=modified_line.split(" ")
-            if x[2]=="S":
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            if line.startswith("#"):
+                continue
+            modified_line = re.sub(r'\s+', ' ', line)
+            x = modified_line.split(" ")
+
+            # NetChop result lines should start with a residue position.
+            # Skip header, warning, usage, or other non-result lines.
+            if len(x) < 3:
+                continue
+            if not x[0].isdigit():
+                continue
+
+            if x[2] == "S":
                 positions.append(int(x[0]))
     for i in split_string(seq, positions):
         if len(i)>7 and len(i)<12:
             antigen.append(i)
-    cmd4 =  "pepsickle -f " + filename + " -t " + str(e5) + " -o " + output4
+    cmd4 =  "pepsickle -f " + filename + " -o " + output4
     res = subprocess.Popen(cmd4,shell=True)
     res.wait()
     positions=[]

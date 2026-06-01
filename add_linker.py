@@ -12,10 +12,9 @@ x=optimal_path_filtering.x
 front_sorted_length=optimal_path_filtering.front_sorted_length
 sorted_length=optimal_path_filtering.sorted_length
 sequence=optimal_path_filtering.current_sequence
-new_antigen_list = util.find_element(util.SB_antigen(optimal_path_filtering.current_sequence,0,util.e1,util.e2,util.e3,util.e4,util.e5), util.modules)
-linker_library = util.linker_library
+new_antigen_list = util.find_element(util.SB_antigen(optimal_path_filtering.current_sequence,0,util.e1,util.e2,util.e3), util.modules)
+linker_library = ["GGGGSGGGGS","SGGGGSGGGG","GSGSGSGSGS","GGSGGSGGSGGS","GGGGSGGGGSAAA","GGGGSGAAAGGSGGGG","GSGSSGSGSS"]
 result_linker = {}
-final = sequence
 if len(new_antigen_list)==0:
         final=sequence
         print("result")
@@ -26,14 +25,15 @@ else:
                 x = util.check_position(A,util.modules)
                 y = util.check_index(A,sequence)
                 new_sequence = util.find_and_replace(A,x,y,i,sequence)
-                if len(util.find_element(util.SB_antigen(new_sequence,0,util.e1,util.e2,util.e3,util.e4,util.e5),util.modules))==0:
+                if len(util.find_element(util.SB_antigen(new_sequence,0,util.e1,util.e2,util.e3),util.modules))==0:
                         final = new_sequence
                         result_linker[i]=new_sequence
                         print("linker",i)
                         print(final)
-filename=str(util.p).split("/")[-1]
-filename_2=filename.split(".")[0]+"_result.txt"
-with open(filename_2,"w") as f:
+filename=str(util.p).split("/")
+filename_2=filename[len(filename)-1]
+filename_3=filename_2.split(".")[0]+"_result.txt"
+with open(filename_3,"w") as f:
         if result_linker:
             f.write("linker")
             f.write("\t")
